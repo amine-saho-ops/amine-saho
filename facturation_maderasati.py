@@ -400,6 +400,29 @@ def main():
         if choix in ("1","2"): print(f"     📋 {os.path.basename(f_b)}")
         ligne()
 
+        # ── IMPRESSION AUTOMATIQUE ──────────────────
+        imp = input("\n  🖨️  Imprimer Facture + BL maintenant ? (o/n) : ").strip().lower()
+        if imp == 'o':
+            import subprocess, sys
+            print("\n  🖨️  Impression en cours...")
+            try:
+                if sys.platform == "win32":
+                    # Windows — ouvre le PDF dans l'imprimante par défaut
+                    if choix in ("1","3"):
+                        subprocess.Popen(['powershell','-Command',
+                            f'Start-Process -FilePath "{f_f}" -Verb Print -Wait'], shell=True)
+                    if choix in ("1","2"):
+                        subprocess.Popen(['powershell','-Command',
+                            f'Start-Process -FilePath "{f_b}" -Verb Print -Wait'], shell=True)
+                else:
+                    if choix in ("1","3"): subprocess.run(['lp', f_f])
+                    if choix in ("1","2"): subprocess.run(['lp', f_b])
+                print("  ✅ Envoyé à l'imprimante!")
+            except Exception as e:
+                print(f"  ⚠️  Erreur impression : {e}")
+                print(f"  👉 Ouvrez manuellement : {OUTPUT_DIR}")
+        ligne()
+
         suite = input("\n  Autre document ? (o/n) : ").strip().lower()
         if suite != 'o':
             print("\n  Au revoir! بسلامة 👋\n"); break
